@@ -237,7 +237,7 @@ This endpoint returns a list of messages from the specified Kafka topic along wi
 To set up a webhook for consuming messages from Kafka topics automatically, send a GET request to the following endpoint:
 
 ```
-GET /webhook/{topic}/{callback_url}
+GET /webhook/{topic}/{callback}
 ```
 
 ### Example request
@@ -251,12 +251,12 @@ https://<you>.kafka.do/webhook/test-topic/https://yourapp.com/consume
 ```json
 {
   "topic": "test-topic",
-  "callback_url": "https://yourapp.com/consume",
-  "webhook_id": "webhook_12345"
+  "callback": "https://yourapp.com/consume",
+  "id": "webhook_12345"
 }
 ```
 
-With this webhook setup, whenever there's a new message on the specified topic, kafka.do will automatically send a POST request to the provided `callback_url`. The request body will contain the message as follows:
+With this webhook setup, whenever there's a new message on the specified topic, kafka.do will automatically send a POST request to the provided `callback`. The request body will contain the message as follows:
 
 ```json
 {
