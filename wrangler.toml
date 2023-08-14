@@ -1,0 +1,9 @@
+name = "kafka-do"
+account_id = "b6641681fe423910342b9ffa1364c76d"
+route = { pattern = "*/*", zone_name = "kafka.do" }
+main = "worker.js"
+compatibility_date = "2023-07-24"
+
+services = [
+  { binding = "CTX", service = "ctx-do", environment = "production" }
+]
