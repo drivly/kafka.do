@@ -98,7 +98,7 @@ https://<you>.kafka.do/consumer/test-topic
 To consume multiple messages from a Kafka topic in bulk, send a GET request to the following endpoint:
 
 ```
-GET /bulk-consumer/{topic}/{count}
+GET /consumer/{topic}/{count}
 ```
 
 Where `{count}` is the number of messages you want to consume at once.
