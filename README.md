@@ -82,7 +82,7 @@ https://<you>.kafka.do/producer/test-topic/hello-world
 
 ## Consume messages from Kafka topic
 
-The `consume` methods allow you to consume messages from a topic. These methods update the consumed offeset.
+The `consume` methods allow you to consume messages from a topic. These methods update a topic's offset if any messages are consumed.
 
 ### Consume a single message from a Kafka topic
 
