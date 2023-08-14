@@ -6,6 +6,45 @@ If you don't already have a browser extension to pretty-print JSON and make link
 
 ## APIs
 
+For all APIs except list, if a topic does not exist, it is created.
+
+### List all topics
+
+To get a list of all available Kafka topics, send a GET request to the following endpoint:
+
+```
+GET /topics
+```
+
+#### Example request
+
+```
+https://<you>.kafka.do/topics
+```
+
+#### Response
+
+```json
+{
+  "topics": [
+    {
+      "name": "test-topic-1",
+      "created_at": "2022-09-15T10:30:20Z"
+    },
+    {
+      "name": "test-topic-2",
+      "created_at": "2022-09-16T14:45:12Z"
+    },
+    {
+      "name": "test-topic-3",
+      "created_at": "2022-09-17T09:20:52Z"
+    }
+  ]
+}
+```
+
+This endpoint returns a list of Kafka topic objects, each containing the topic name and its creation timestamp.
+
 ### Produce a message to a Kafka topic
 
 To produce a message to a Kafka topic, send a GET request to the following endpoint:
@@ -53,6 +92,54 @@ https://<you>.kafka.do/consumer/test-topic
   "offset": 42
 }
 ```
+
+### Consume multiple messages from a Kafka topic
+
+To consume multiple messages from a Kafka topic in bulk, send a GET request to the following endpoint:
+
+```
+GET /bulk-consumer/{topic}/{count}
+```
+
+Where `{count}` is the number of messages you want to consume at once.
+
+#### Example request
+
+```
+https://<you>.kafka.do/bulk-consumer/test-topic/5
+```
+
+#### Response
+
+```json
+{
+  "topic": "test-topic",
+  "messages": [
+    {
+      "message": "hello-world-1",
+      "offset": 42
+    },
+    {
+      "message": "hello-world-2",
+      "offset": 43
+    },
+    {
+      "message": "hello-world-3",
+      "offset": 44
+    },
+    {
+      "message": "hello-world-4",
+      "offset": 45
+    },
+    {
+      "message": "hello-world-5",
+      "offset": 46
+    }
+  ]
+}
+```
+
+This endpoint returns a list of messages from the specified Kafka topic along with their respective offsets. The number of messages in the response may be smaller than the requested count if there are fewer available messages in the topic at the time of the request.
 
 ### Webhooks setup
 
