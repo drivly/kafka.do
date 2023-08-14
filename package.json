@@ -1,0 +1,16 @@
+{
+  "name": "kafka.do",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "start": "wrangler dev"
+  },
+  "deependencies": {
+    "itty-router": "^4.0.14"
+  }
+  "devDependencies": {
+    "prettier": "^3.0.0",
+    "wrangler": "^3.0.0"
+  }
+}
