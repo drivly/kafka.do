@@ -141,6 +141,82 @@ https://<you>.kafka.do/consumer/test-topic/5
 
 This endpoint returns a list of messages from the specified Kafka topic along with their respective offsets. The number of messages in the response may be smaller than the requested count if there are fewer available messages in the topic at the time of the request.
 
+## Fetch messages from Kafka topic
+
+The `fetch` API allows you to retrieve messages from a Kafka topic without actually consuming them and modifying the consumed offset. This is useful when you want to preview messages without affecting the state of the topic.
+
+### Fetch a single message from a Kafka topic
+
+To fetch a single message from a Kafka topic, send a GET request to the following endpoint:
+
+```
+GET /fetch/{topic}
+```
+
+#### Example request
+
+```
+https://<you>.kafka.do/fetch/test-topic
+```
+
+#### Response
+
+```json
+{
+  "topic": "test-topic",
+  "message": "hello-world",
+  "offset": 42
+}
+```
+
+### Fetch multiple messages from a Kafka topic
+
+To fetch multiple messages from a Kafka topic in bulk, send a GET request to the following endpoint:
+
+```
+GET /fetch/{topic}/{count}
+```
+
+Where `{count}` is the number of messages you want to fetch at once.
+
+#### Example request
+
+```
+https://<you>.kafka.do/fetch/test-topic/5
+```
+
+#### Response
+
+```json
+{
+  "topic": "test-topic",
+  "messages": [
+    {
+      "message": "hello-world-1",
+      "offset": 42
+    },
+    {
+      "message": "hello-world-2",
+      "offset": 43
+    },
+    {
+      "message": "hello-world-3",
+      "offset": 44
+    },
+    {
+      "message": "hello-world-4",
+      "offset": 45
+    },
+    {
+      "message": "hello-world-5",
+      "offset": 46
+    }
+  ]
+}
+```
+
+This endpoint returns a list of messages from the specified Kafka topic along with their respective offsets, without modifying the consumed offset. The number of messages in the response may be smaller than the requested count if there are fewer available messages in the topic at the time of the request.
+
 ### Webhooks setup
 
 To set up a webhook for consuming messages from Kafka topics automatically, send a GET request to the following endpoint:
