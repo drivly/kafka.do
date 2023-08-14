@@ -106,7 +106,7 @@ Where `{count}` is the number of messages you want to consume at once.
 #### Example request
 
 ```
-https://<you>.kafka.do/bulk-consumer/test-topic/5
+https://<you>.kafka.do/consumer/test-topic/5
 ```
 
 #### Response
