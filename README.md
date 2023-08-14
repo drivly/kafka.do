@@ -4,6 +4,19 @@ kafka.do is a simple Cloudflare Worker-based API that provides an easy-to-use Ka
 
 If you don't already have a browser extension to pretty-print JSON and make links clickable, start by installing that: <https://extensions.do>
 
+## Table of Contents
+
+- [APIs](#apis)
+  - [List all topics](#list-all-topics)
+  - [Produce a message to a Kafka topic](#produce-a-message-to-a-kafka-topic)
+  - [Consume a single message from a Kafka topic](#consume-a-single-message-from-a-kafka-topic)
+  - [Consume multiple messages from a Kafka topic](#consume-multiple-messages-from-a-kafka-topic)
+  - [Fetch messages from Kafka topic](#fetch-messages-from-kafka-topic)
+    - [Fetch a single message from a Kafka topic](#fetch-a-single-message-from-a-kafka-topic)
+    - [Fetch multiple messages from a Kafka topic](#fetch-multiple-messages-from-a-kafka-topic)
+  - [Webhooks setup](#webhooks-setup)
+- [Error messages](#error-messages)
+
 ## APIs
 
 For all APIs except list, if a topic does not exist, it is created.
