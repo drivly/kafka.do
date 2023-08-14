@@ -1,4 +1,4 @@
-# kafka.do README.md
+# kafka.do
 
 kafka.do is a simple Cloudflare Worker-based API that provides an easy-to-use Kafka topic production and consumption interface with support for webhooks.
 
