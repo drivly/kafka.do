@@ -6,22 +6,20 @@ If you don't already have a browser extension to pretty-print JSON and make link
 
 ## Table of Contents
 
-- [APIs](#apis)
-  - [List all topics](#list-all-topics)
-  - [Produce a message to a Kafka topic](#produce-a-message-to-a-kafka-topic)
+- [List all topics](#list-all-topics)
+- [Produce a message to a Kafka topic](#produce-a-message-to-a-kafka-topic)
+- [Consume messages from Kafka topic](#consume-messages-from-kafka-topic)
   - [Consume a single message from a Kafka topic](#consume-a-single-message-from-a-kafka-topic)
   - [Consume multiple messages from a Kafka topic](#consume-multiple-messages-from-a-kafka-topic)
-  - [Fetch messages from Kafka topic](#fetch-messages-from-kafka-topic)
-    - [Fetch a single message from a Kafka topic](#fetch-a-single-message-from-a-kafka-topic)
-    - [Fetch multiple messages from a Kafka topic](#fetch-multiple-messages-from-a-kafka-topic)
-  - [Webhooks setup](#webhooks-setup)
+- [Fetch messages from Kafka topic](#fetch-messages-from-kafka-topic)
+  - [Fetch a single message from a Kafka topic](#fetch-a-single-message-from-a-kafka-topic)
+  - [Fetch multiple messages from a Kafka topic](#fetch-multiple-messages-from-a-kafka-topic)
+- [Webhooks setup](#webhooks-setup)
 - [Error messages](#error-messages)
 
-## APIs
+For all methods except list, if a topic does not exist, it is created.
 
-For all APIs except list, if a topic does not exist, it is created.
-
-### List all topics
+## List all topics
 
 To get a list of all available Kafka topics, send a GET request to the following endpoint:
 
@@ -29,13 +27,13 @@ To get a list of all available Kafka topics, send a GET request to the following
 GET /topics
 ```
 
-#### Example request
+### Example request
 
 ```
 https://<you>.kafka.do/topics
 ```
 
-#### Response
+### Response
 
 ```json
 {
@@ -58,7 +56,7 @@ https://<you>.kafka.do/topics
 
 This endpoint returns a list of Kafka topic objects, each containing the topic name and its creation timestamp.
 
-### Produce a message to a Kafka topic
+## Produce a message to a Kafka topic
 
 To produce a message to a Kafka topic, send a GET request to the following endpoint:
 
@@ -66,13 +64,13 @@ To produce a message to a Kafka topic, send a GET request to the following endpo
 GET /producer/{topic}/{message}
 ```
 
-#### Example request
+### Example request
 
 ```
 https://<you>.kafka.do/producer/test-topic/hello-world
 ```
 
-#### Response
+### Response
 
 ```json
 {
@@ -81,6 +79,10 @@ https://<you>.kafka.do/producer/test-topic/hello-world
   "offset": 42
 }
 ```
+
+## Consume messages from Kafka topic
+
+The `consume` methods allow you to consume messages from a topic. These methods update the consumed offeset.
 
 ### Consume a single message from a Kafka topic
 
@@ -156,7 +158,7 @@ This endpoint returns a list of messages from the specified Kafka topic along wi
 
 ## Fetch messages from Kafka topic
 
-The `fetch` API allows you to retrieve messages from a Kafka topic without actually consuming them and modifying the consumed offset. This is useful when you want to preview messages without affecting the state of the topic.
+The `fetch` methods allow you to retrieve messages from a Kafka topic without actually consuming them and modifying the consumed offset. This is useful when you want to preview messages without affecting the state of the topic.
 
 ### Fetch a single message from a Kafka topic
 
@@ -230,7 +232,7 @@ https://<you>.kafka.do/fetch/test-topic/5
 
 This endpoint returns a list of messages from the specified Kafka topic along with their respective offsets, without modifying the consumed offset. The number of messages in the response may be smaller than the requested count if there are fewer available messages in the topic at the time of the request.
 
-### Webhooks setup
+## Webhooks setup
 
 To set up a webhook for consuming messages from Kafka topics automatically, send a GET request to the following endpoint:
 
@@ -238,13 +240,13 @@ To set up a webhook for consuming messages from Kafka topics automatically, send
 GET /webhook/{topic}/{callback_url}
 ```
 
-#### Example request
+### Example request
 
 ```
 https://<you>.kafka.do/webhook/test-topic/https://yourapp.com/consume
 ```
 
-#### Response
+### Response
 
 ```json
 {
