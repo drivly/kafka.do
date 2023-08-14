@@ -24,12 +24,10 @@ https://kafka.do/producer/test-topic/hello-world
 
 ```json
 {
-  "status": "success",
-  "data": {
-    "topic": "test-topic",
-    "message": "hello-world",
-    "offset": 42
-  }
+  ...
+  "topic": "test-topic",
+  "message": "hello-world",
+  "offset": 42
 }
 ```
 
@@ -51,12 +49,10 @@ https://kafka.do/consumer/test-topic
 
 ```json
 {
-  "status": "success",
-  "data": {
-    "topic": "test-topic",
-    "message": "hello-world",
-    "offset": 42
-  }
+  ...
+  "topic": "test-topic",
+  "message": "hello-world",
+  "offset": 42
 }
 ```
 
@@ -78,12 +74,10 @@ https://kafka.do/webhook/test-topic/https://yourapp.com/consume
 
 ```json
 {
-  "status": "success",
-  "data": {
-    "topic": "test-topic",
-    "callback_url": "https://yourapp.com/consume",
-    "webhook_id": "webhook_12345"
-  }
+  ...
+  "topic": "test-topic",
+  "callback_url": "https://yourapp.com/consume",
+  "webhook_id": "webhook_12345"
 }
 ```
 
@@ -103,7 +97,7 @@ In case of an error, the response will contain an `error` message describing the
 
 ```json
 {
-  "status": "error",
+  ...
   "error": "Error message"
 }
 ```
