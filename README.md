@@ -11,13 +11,13 @@ If you don't already have a browser extension to pretty-print JSON and make link
 To produce a message to a Kafka topic, send a GET request to the following endpoint:
 
 ```
-https://kafka.do/producer/{topic}/{message}
+GET /producer/{topic}/{message}
 ```
 
 #### Example request
 
 ```
-https://kafka.do/producer/test-topic/hello-world
+https://<you>.kafka.do/producer/test-topic/hello-world
 ```
 
 #### Response
@@ -35,13 +35,13 @@ https://kafka.do/producer/test-topic/hello-world
 To consume a single message from a Kafka topic, send a GET request to the following endpoint:
 
 ```
-https://kafka.do/consumer/{topic}
+GET /consumer/{topic}
 ```
 
 #### Example request
 
 ```
-https://kafka.do/consumer/test-topic
+https://<you>.kafka.do/consumer/test-topic
 ```
 
 #### Response
@@ -59,13 +59,13 @@ https://kafka.do/consumer/test-topic
 To set up a webhook for consuming messages from Kafka topics automatically, send a GET request to the following endpoint:
 
 ```
-https://kafka.do/webhook/{topic}/{callback_url}
+GET /webhook/{topic}/{callback_url}
 ```
 
 #### Example request
 
 ```
-https://kafka.do/webhook/test-topic/https://yourapp.com/consume
+https://<you>.kafka.do/webhook/test-topic/https://yourapp.com/consume
 ```
 
 #### Response
