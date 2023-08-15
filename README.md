@@ -1,4 +1,4 @@
-# kafka.do API Documentation
+# kafka.do
 
 kafka.do is a simplified interface for Kafka topics, allowing you to easily manage your Kafka queues.
 
