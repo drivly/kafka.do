@@ -38,7 +38,7 @@ kafka.do is a simplified interface for Kafka topics, allowing you to easily mana
 
 ## Parameters
 
-All endpoints accept the following parameters to change queue behavior:
+Each endpoint creates the queue if it does not exist and accepts the following parameters to change queue behavior:
 
 - `max_batch_size`: The maximum number of messages allowed in each batch.
 
