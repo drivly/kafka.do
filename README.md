@@ -1,6 +1,6 @@
 # kafka.do
 
-kafka.do is a simple Cloudflare Worker-based API that provides an easy-to-use Kafka topic production and consumption interface with support for webhooks.
+kafka.do is a simple Cloudflare Worker-based API that provides an easy-to-use Kafka topic production and consumption interface.
 
 If you don't already have a browser extension to pretty-print JSON and make links clickable, start by installing that: <https://extensions.do>
 
@@ -14,7 +14,6 @@ If you don't already have a browser extension to pretty-print JSON and make link
 - [Fetch messages from Kafka topic](#fetch-messages-from-kafka-topic)
   - [Fetch a single message from a Kafka topic](#fetch-a-single-message-from-a-kafka-topic)
   - [Fetch multiple messages from a Kafka topic](#fetch-multiple-messages-from-a-kafka-topic)
-- [Webhooks setup](#webhooks-setup)
 - [Error messages](#error-messages)
 
 For all methods except list, if a topic does not exist, it is created.
@@ -232,40 +231,6 @@ curl https://<you>.kafka.do/fetch/test-topic/5
 
 This endpoint returns a list of messages from the specified Kafka topic along with their respective offsets, without modifying the consumed offset. The number of messages in the response may be smaller than the requested count if there are fewer available messages in the topic at the time of the request.
 
-## Webhooks setup
-
-To set up a webhook for consuming messages from Kafka topics automatically, send a GET request to the following endpoint:
-
-```http
-GET /webhook/{topic}/{callback}
-```
-
-### Example request
-
-```curl
-curl https://<you>.kafka.do/webhook/test-topic/https://yourapp.com/consume
-```
-
-### Response
-
-```json
-{
-  "topic": "test-topic",
-  "callback": "https://yourapp.com/consume",
-  "id": "webhook_12345"
-}
-```
-
-With this webhook setup, whenever there's a new message on the specified topic, kafka.do will automatically send a POST request to the provided `callback`. The request body will contain the message as follows:
-
-```json
-{
-    "topic": "test-topic",
-    "message": "hello-world",
-    "offset": 42
-}
-```
-
 ## Error messages
 
 In case of an error, the response will contain an `error` message describing the issue:
@@ -276,13 +241,8 @@ In case of an error, the response will contain an `error` message describing the
 }
 ```
 
-Examples of error messages include:
-
-1. "Topic not found"
-2. "Invalid webhook URL"
-
 ## 🚀 We're Hiring
 
 [Driv.ly](https://driv.ly) is [deconstructing the monolithic physical dealership](https://blog.driv.ly/deconstructing-the-monolithic-physical-dealership) into [simple APIs to buy and sell cars online](https://driv.ly), and we're funded by some of the [biggest names](https://twitter.com/TurnerNovak) in [automotive](https://fontinalis.com/team/#bill-ford) and [finance & insurance](https://www.detroit.vc)
 
-Our entire infrastructure is built with [Cloudflare Workers](https://workers.do), [Durable Objects](https://durable.objects.do), [KV](https://kv.cf), [PubSub](https://pubsub.do), [R2](https://r2.do.cf), [Pages](https://pages.do), etc.  [If you love the Cloudflare Workers ecosystem as much as we do](https://driv.ly/loves/workers), we'd love to have you [join our team](https://careers.do/apply)!
+Our entire infrastructure is built with [Cloudflare Workers](https://workers.do), [Durable Objects](https://durable.objects.do), [KV](https://kv.cf), [PubSub](https://pubsub.do), [R2](https://r2.do.cf), [Pages](https://pages.do), etc. [If you love the Cloudflare Workers ecosystem as much as we do](https://driv.ly/loves/workers), we'd love to have you [join our team](https://careers.do/apply)!
