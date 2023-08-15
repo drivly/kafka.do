@@ -4,6 +4,10 @@ kafka.do is a simplified interface for Kafka topics, allowing you to easily mana
 
 ## Endpoints
 
+### List all queues
+
+- `GET /`
+  
 ### Consume from a queue
 
 - `GET /:queue`
