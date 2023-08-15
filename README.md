@@ -1,248 +1,51 @@
-# kafka.do
+# kafka.do API Documentation
 
-kafka.do is a simple Cloudflare Worker-based API that provides an easy-to-use Kafka topic production and consumption interface.
+kafka.do is a simplified interface for Kafka topics, allowing you to easily manage your Kafka queues.
 
-If you don't already have a browser extension to pretty-print JSON and make links clickable, start by installing that: <https://extensions.do>
+## Endpoints
 
-## Table of Contents
+### Consume from a queue
 
-- [List all topics](#list-all-topics)
-- [Produce a message to a Kafka topic](#produce-a-message-to-a-kafka-topic)
-- [Consume messages from Kafka topic](#consume-messages-from-kafka-topic)
-  - [Consume a single message from a Kafka topic](#consume-a-single-message-from-a-kafka-topic)
-  - [Consume multiple messages from a Kafka topic](#consume-multiple-messages-from-a-kafka-topic)
-- [Fetch messages from Kafka topic](#fetch-messages-from-kafka-topic)
-  - [Fetch a single message from a Kafka topic](#fetch-a-single-message-from-a-kafka-topic)
-  - [Fetch multiple messages from a Kafka topic](#fetch-multiple-messages-from-a-kafka-topic)
-- [Error messages](#error-messages)
+- `GET /:queue`
 
-For all methods except list, if a topic does not exist, it is created.
+### Produce a message to a queue
 
-## List all topics
+- `GET /:queue/send/:message`
 
-To get a list of all available Kafka topics, send a GET request to the following endpoint:
+### Send an array of messages as JSON
 
-```http
-GET /topics
-```
+- `POST /:queue/sendBatch`
 
-### Example request
+### Acknowledge all messages as consumed
 
-```curl
-curl https://<you>.kafka.do/topics
-```
+- `GET /:queue/ackAll`
 
-### Response
+### Mark all messages to be retried
 
-```json
-{
-  "topics": [
-    {
-      "name": "test-topic-1",
-      "created_at": "2022-09-15T10:30:20Z"
-    },
-    {
-      "name": "test-topic-2",
-      "created_at": "2022-09-16T14:45:12Z"
-    },
-    {
-      "name": "test-topic-3",
-      "created_at": "2022-09-17T09:20:52Z"
-    }
-  ]
-}
-```
+- `GET /:queue/retryAll`
 
-This endpoint returns a list of Kafka topic objects, each containing the topic name and its creation timestamp.
+### Acknowledge a message as consumed
 
-## Produce a message to a Kafka topic
+- `GET /:queue/ack/:messageId`
 
-To produce a message to a Kafka topic, send a GET request to the following endpoint:
+### Mark a message to be retried
 
-```http
-GET /producer/{topic}/{message}
-```
+- `GET /:queue/retry/:messageId`
 
-### Example request
+### Automatically consume to a webhook URL
 
-```curl
-curl https://<you>.kafka.do/producer/test-topic/hello-world
-```
+- `GET /:queue/webhook/:url`
 
-### Response
+## Parameters
 
-```json
-{
-  "topic": "test-topic",
-  "message": "hello-world",
-  "offset": 42
-}
-```
+All endpoints accept the following parameters to change queue behavior:
 
-## Consume messages from Kafka topic
+- `max_batch_size`: The maximum number of messages allowed in each batch.
 
-The `consume` methods allow you to consume messages from a topic. These methods update a topic's offset if any messages are consumed.
+- `max_batch_timeout`: The maximum number of seconds to wait until a batch is full.
 
-### Consume a single message from a Kafka topic
+- `max_retries`: The maximum number of retries for a message, if it fails or retryAll is invoked.
 
-To consume a single message from a Kafka topic, send a GET request to the following endpoint:
+- `dead_letter_queue`: The name of another Queue to send a message if it fails processing at least max_retries times. If a dead_letter_queue is not defined, messages that repeatedly fail processing will eventually be discarded. If there is no Queue with the specified name, it will be created automatically.
 
-```http
-GET /consumer/{topic}
-```
-
-#### Example request
-
-```curl
-curl https://<you>.kafka.do/consumer/test-topic
-```
-
-#### Response
-
-```json
-{
-  "topic": "test-topic",
-  "message": "hello-world",
-  "offset": 42
-}
-```
-
-### Consume multiple messages from a Kafka topic
-
-To consume multiple messages from a Kafka topic in bulk, send a GET request to the following endpoint:
-
-```http
-GET /consumer/{topic}/{count}
-```
-
-Where `{count}` is the number of messages you want to consume at once.
-
-#### Example request
-
-```curl
-curl https://<you>.kafka.do/consumer/test-topic/5
-```
-
-#### Response
-
-```json
-{
-  "topic": "test-topic",
-  "messages": [
-    {
-      "message": "hello-world-1",
-      "offset": 42
-    },
-    {
-      "message": "hello-world-2",
-      "offset": 43
-    },
-    {
-      "message": "hello-world-3",
-      "offset": 44
-    },
-    {
-      "message": "hello-world-4",
-      "offset": 45
-    },
-    {
-      "message": "hello-world-5",
-      "offset": 46
-    }
-  ]
-}
-```
-
-This endpoint returns a list of messages from the specified Kafka topic along with their respective offsets. The number of messages in the response may be smaller than the requested count if there are fewer available messages in the topic at the time of the request.
-
-## Fetch messages from Kafka topic
-
-The `fetch` methods allow you to retrieve messages from a Kafka topic without actually consuming them and modifying the consumed offset. This is useful when you want to preview messages without affecting the state of the topic.
-
-### Fetch a single message from a Kafka topic
-
-To fetch a single message from a Kafka topic, send a GET request to the following endpoint:
-
-```http
-GET /fetch/{topic}
-```
-
-#### Example request
-
-```curl
-curl https://<you>.kafka.do/fetch/test-topic
-```
-
-#### Response
-
-```json
-{
-  "topic": "test-topic",
-  "message": "hello-world",
-  "offset": 42
-}
-```
-
-### Fetch multiple messages from a Kafka topic
-
-To fetch multiple messages from a Kafka topic in bulk, send a GET request to the following endpoint:
-
-```http
-GET /fetch/{topic}/{count}
-```
-
-Where `{count}` is the number of messages you want to fetch at once.
-
-#### Example request
-
-```curl
-curl https://<you>.kafka.do/fetch/test-topic/5
-```
-
-#### Response
-
-```json
-{
-  "topic": "test-topic",
-  "messages": [
-    {
-      "message": "hello-world-1",
-      "offset": 42
-    },
-    {
-      "message": "hello-world-2",
-      "offset": 43
-    },
-    {
-      "message": "hello-world-3",
-      "offset": 44
-    },
-    {
-      "message": "hello-world-4",
-      "offset": 45
-    },
-    {
-      "message": "hello-world-5",
-      "offset": 46
-    }
-  ]
-}
-```
-
-This endpoint returns a list of messages from the specified Kafka topic along with their respective offsets, without modifying the consumed offset. The number of messages in the response may be smaller than the requested count if there are fewer available messages in the topic at the time of the request.
-
-## Error messages
-
-In case of an error, the response will contain an `error` message describing the issue:
-
-```json
-{
-  "error": "Error message"
-}
-```
-
-## 🚀 We're Hiring
-
-[Driv.ly](https://driv.ly) is [deconstructing the monolithic physical dealership](https://blog.driv.ly/deconstructing-the-monolithic-physical-dealership) into [simple APIs to buy and sell cars online](https://driv.ly), and we're funded by some of the [biggest names](https://twitter.com/TurnerNovak) in [automotive](https://fontinalis.com/team/#bill-ford) and [finance & insurance](https://www.detroit.vc)
-
-Our entire infrastructure is built with [Cloudflare Workers](https://workers.do), [Durable Objects](https://durable.objects.do), [KV](https://kv.cf), [PubSub](https://pubsub.do), [R2](https://r2.do.cf), [Pages](https://pages.do), etc. [If you love the Cloudflare Workers ecosystem as much as we do](https://driv.ly/loves/workers), we'd love to have you [join our team](https://careers.do/apply)!
+- `max_concurrency`: The maximum number of concurrent consumers allowed to run at once. Leaving this unset will mean that the number of invocations will scale to the currently supported maximum.

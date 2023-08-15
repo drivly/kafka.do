@@ -1,18 +1,21 @@
 {
   "name": "kafka.do",
   "version": "0.0.1",
+  "description": "A Cloudflare Worker API providing a Cloudflare Queues-like API with the maturity of Kafka topics.",
   "private": true,
   "scripts": {
     "deploy": "wrangler deploy",
-    "start": "wrangler dev"
+    "start": "wrangler dev",
+    "format": "prettier --write ."
   },
   "dependencies": {
-    "itty-router": "^4.0.14",
-    "@upstash/kafka": "^1.3.3"
+    "@upstash/kafka": "^1.3.3",
+    "itty-durable": "^2.1.0",
+    "itty-router": "^4.0.15"
   },
   "devDependencies": {
-    "prettier": "^3.0.0",
-    "wrangler": "^3.0.0"
+    "prettier": "^3.0.2",
+    "wrangler": "^3.5.0"
   },
   "prettier": {
     "singleQuote": true,
