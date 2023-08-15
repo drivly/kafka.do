@@ -51,32 +51,27 @@ router.get('/producer/:topic/:message', async (request) => {
   const producer = kafka.producer()
 
   try {
-    await producer.connect()
-    const { baseOffset } = await producer.send({
-      topic,
-      messages: [{ value: message }],
-    })
-    await producer.disconnect()
+    const res = await producer.produce(topic, message)
 
-    return json({ api: request.api, topic, message, offset: baseOffset, user: request.ctx.user }, { status: 200 })
+    return json({ api: request.api, topic, message, offset: res.result.baseOffset, user: request.ctx.user }, { status: 200 })
   } catch (error) {
     return json({ api: request.api, error: error.message, user: request.ctx.user }, { status: 500 })
   }
 })
 
-async function consumeSingleMessage(topic, groupId) {
+async function consumeMessages(topic, groupId) {
   const kafka = new Kafka(request.kafkaConfig)
-  const consumer = kafka.consumer({ groupId })
+  const consumer = kafka.consumer()
 
   try {
-    await consumer.subscribe({ topic })
-    const messages = await consumer.runOnce({ autoCommit: true, eachMessage: true })
+    const messages = await consumer.consume({
+      consumerGroupId: groupId,
+      instanceId: 'instance_1',
+      topics: [topic],
+      autoOffsetReset: 'earliest',
+    })
 
-    if (messages && messages.length > 0) {
-      return messages[0]
-    } else {
-      return null
-    }
+    return messages
   } catch (error) {
     throw error
   }
@@ -84,96 +79,51 @@ async function consumeSingleMessage(topic, groupId) {
 
 router.get('/consumer/:topic', async (request) => {
   try {
+    const { topic, groupId } = request.params
+    const messages = await consumeMessages(topic, groupId || request.ctx.user.id)
+
+    return json(
+      {
+        api,
+        topic,
+        messages:
+          messages && messages.length > 0
+            ? messages.map((message) => ({
+                message: message.value,
+                offset: message.offset,
+              }))
+            : [],
+        user: request.ctx.user,
+      },
+      { status: 200 }
+    )
+  } catch (error) {
+    return json({ api: request.api, error: error.message, user: request.ctx.user }, { status: 500 })
+  }
+})
+
+router.get('/fetch/:topic', async (request) => {
+  try {
     const { topic } = request.params
-    const message = await consumeSingleMessage(topic, groupId)
+    const consumer = new Kafka(request.kafkaConfig).consumer()
 
-    if (message) {
-      return json({ api: request.api, topic, message: message.value, offset: message.offset, user: request.ctx.user }, { status: 200 })
-    } else {
-      return json({ api: request.api, error: 'No messages available', user: request.ctx.user }, { status: 404 })
-    }
-  } catch (error) {
-    return json({ api: request.api, error: error.message, user: request.ctx.user }, { status: 500 })
-  }
-})
+    const messages = await consumer.fetch({ topic, partition: 0, offset: 0 })
 
-async function consumeMultipleMessages(topic, groupId, count) {
-  const kafka = new Kafka(request.kafkaConfig)
-  const consumer = kafka.consumer({ groupId })
-  try {
-    await consumer.subscribe({ topic })
-    const messages = await consumer.runOnce({
-      autoCommit: true,
-      maxMessages: count,
-      eachMessage: true,
-    })
-    return messages
-  } catch (error) {
-    throw error
-  }
-}
-
-router.get('/consumer/:topic/:count', async (request) => {
-  try {
-    const { topic, count } = request.params
-    const messages = await consumeMultipleMessages(topic, groupId, parseInt(count))
-
-    if (messages && messages.length > 0) {
-      return new Response(
-        JSON.stringify({
-          api,
-          topic,
-          messages: messages.map((message) => ({
-            message: message.value,
-            offset: message.offset,
-          })),
-          user: request.ctx.user,
-        }),
-        { status: 200 }
-      )
-    } else {
-      return json({ api: request.api, error: 'No messages available', user: request.ctx.user }, { status: 404 })
-    }
-  } catch (error) {
-    return json({ api: request.api, error: error.message, user: request.ctx.user }, { status: 500 })
-  }
-})
-
-router.get('/fetch/:topic', async (request, { topic }) => {
-  try {
-    const message = await consumeSingleMessage(topic, groupId + '-fetch')
-
-    if (message) {
-      return json({ api: request.api, topic, message: message.value, offset: message.offset, user: request.ctx.user }, { status: 200 })
-    } else {
-      return json({ api: request.api, error: 'No messages available', user: request.ctx.user }, { status: 404 })
-    }
-  } catch (error) {
-    return json({ api: request.api, error: error.message, user: request.ctx.user }, { status: 500 })
-  }
-})
-
-router.get('/fetch/:topic/:count', async (request) => {
-  try {
-    const { topic, count } = request.params
-    const messages = await consumeMultipleMessages(topic, groupId + '-fetch', parseInt(count))
-
-    if (messages && messages.length > 0) {
-      return new Response(
-        JSON.stringify({
-          api,
-          topic,
-          messages: messages.map((message) => ({
-            message: message.value,
-            offset: message.offset,
-          })),
-          user: request.ctx.user,
-        }),
-        { status: 200 }
-      )
-    } else {
-      return json({ api: request.api, error: 'No messages available', user: request.ctx.user }, { status: 404 })
-    }
+    return json(
+      {
+        api,
+        topic,
+        messages:
+          messages && messages.length > 0
+            ? messages.map((message) => ({
+                message: message.value,
+                offset: message.offset,
+              }))
+            : [],
+        user: request.ctx.user,
+      },
+      { status: 200 }
+    )
   } catch (error) {
     return json({ api: request.api, error: error.message, user: request.ctx.user }, { status: 500 })
   }
