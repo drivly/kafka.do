@@ -6,9 +6,10 @@
     "deploy": "wrangler deploy",
     "start": "wrangler dev"
   },
-  "deependencies": {
-    "itty-router": "^4.0.14"
-  }
+  "dependencies": {
+    "itty-router": "^4.0.14",
+    "@upstash/kafka": "^1.3.3"
+  },
   "devDependencies": {
     "prettier": "^3.0.0",
     "wrangler": "^3.0.0"

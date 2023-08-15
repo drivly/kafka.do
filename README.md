@@ -23,14 +23,14 @@ For all methods except list, if a topic does not exist, it is created.
 
 To get a list of all available Kafka topics, send a GET request to the following endpoint:
 
-```
+```http
 GET /topics
 ```
 
 ### Example request
 
-```
-https://<you>.kafka.do/topics
+```curl
+curl https://<you>.kafka.do/topics
 ```
 
 ### Response
@@ -60,14 +60,14 @@ This endpoint returns a list of Kafka topic objects, each containing the topic n
 
 To produce a message to a Kafka topic, send a GET request to the following endpoint:
 
-```
+```http
 GET /producer/{topic}/{message}
 ```
 
 ### Example request
 
-```
-https://<you>.kafka.do/producer/test-topic/hello-world
+```curl
+curl https://<you>.kafka.do/producer/test-topic/hello-world
 ```
 
 ### Response
@@ -88,14 +88,14 @@ The `consume` methods allow you to consume messages from a topic. These methods 
 
 To consume a single message from a Kafka topic, send a GET request to the following endpoint:
 
-```
+```http
 GET /consumer/{topic}
 ```
 
 #### Example request
 
-```
-https://<you>.kafka.do/consumer/test-topic
+```curl
+curl https://<you>.kafka.do/consumer/test-topic
 ```
 
 #### Response
@@ -112,7 +112,7 @@ https://<you>.kafka.do/consumer/test-topic
 
 To consume multiple messages from a Kafka topic in bulk, send a GET request to the following endpoint:
 
-```
+```http
 GET /consumer/{topic}/{count}
 ```
 
@@ -120,8 +120,8 @@ Where `{count}` is the number of messages you want to consume at once.
 
 #### Example request
 
-```
-https://<you>.kafka.do/consumer/test-topic/5
+```curl
+curl https://<you>.kafka.do/consumer/test-topic/5
 ```
 
 #### Response
@@ -164,14 +164,14 @@ The `fetch` methods allow you to retrieve messages from a Kafka topic without ac
 
 To fetch a single message from a Kafka topic, send a GET request to the following endpoint:
 
-```
+```http
 GET /fetch/{topic}
 ```
 
 #### Example request
 
-```
-https://<you>.kafka.do/fetch/test-topic
+```curl
+curl https://<you>.kafka.do/fetch/test-topic
 ```
 
 #### Response
@@ -188,7 +188,7 @@ https://<you>.kafka.do/fetch/test-topic
 
 To fetch multiple messages from a Kafka topic in bulk, send a GET request to the following endpoint:
 
-```
+```http
 GET /fetch/{topic}/{count}
 ```
 
@@ -196,8 +196,8 @@ Where `{count}` is the number of messages you want to fetch at once.
 
 #### Example request
 
-```
-https://<you>.kafka.do/fetch/test-topic/5
+```curl
+curl https://<you>.kafka.do/fetch/test-topic/5
 ```
 
 #### Response
@@ -236,14 +236,14 @@ This endpoint returns a list of messages from the specified Kafka topic along wi
 
 To set up a webhook for consuming messages from Kafka topics automatically, send a GET request to the following endpoint:
 
-```
+```http
 GET /webhook/{topic}/{callback}
 ```
 
 ### Example request
 
-```
-https://<you>.kafka.do/webhook/test-topic/https://yourapp.com/consume
+```curl
+curl https://<you>.kafka.do/webhook/test-topic/https://yourapp.com/consume
 ```
 
 ### Response
@@ -281,7 +281,7 @@ Examples of error messages include:
 1. "Topic not found"
 2. "Invalid webhook URL"
 
-##  🚀 We're Hiring!
+## 🚀 We're Hiring
 
 [Driv.ly](https://driv.ly) is [deconstructing the monolithic physical dealership](https://blog.driv.ly/deconstructing-the-monolithic-physical-dealership) into [simple APIs to buy and sell cars online](https://driv.ly), and we're funded by some of the [biggest names](https://twitter.com/TurnerNovak) in [automotive](https://fontinalis.com/team/#bill-ford) and [finance & insurance](https://www.detroit.vc)
 
