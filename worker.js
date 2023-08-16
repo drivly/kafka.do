@@ -1,14 +1,16 @@
 import { Router, json } from 'itty-router'
 import { Kafka } from '@upstash/kafka'
 
-const kafkaConfig = {
-    url: env.KAFKA_URL,
-    username: env.KAFKA_USERNAME,
-    password: env.KAFKA_PASSWORD,
-  }
+let kafkaConfig
 
 const withCtx = async (request, env) => {
   request.ctx = await env.CTX.fetch(request).then((res) => res.json())
+  if (!kafkaConfig)
+    kafkaConfig = {
+      url: env.KAFKA_URL,
+      username: env.KAFKA_USERNAME,
+      password: env.KAFKA_PASSWORD,
+    }
   console.log(request)
   if (!request.ctx.user) {
     return Response.redirect('/login')
@@ -38,8 +40,6 @@ const withCtx = async (request, env) => {
 
 const router = Router()
 router.all('*', withCtx)
-
-
 
 router.get('*', (request) => json({ api: request.api, error: 'Not Found', user: request.ctx.user }, { status: 404 }))
 
