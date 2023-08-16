@@ -12,3 +12,7 @@ services = [
 bindings = [
   { name = "TopicManager", class_name = "TopicManager" }
 ]
+
+[[migrations]]
+tag = "v1"
+new_classes = ["TopicManager"]
