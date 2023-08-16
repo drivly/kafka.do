@@ -58,6 +58,6 @@ Each endpoint creates the queue if it does not exist and accepts the following p
 
 - `maxRetries`: The maximum number of retries for a message, if it fails or retryAll is invoked.
 
-- `deadLetterQueue`: The name of another Queue to send a message if it fails processing at least max_retries times. If a dead_letter_queue is not defined, messages that repeatedly fail processing will eventually be discarded. If there is no Queue with the specified name, it will be created automatically.
+- `deadLetterQueue`: The name of another Queue to send a message if it fails processing at least maxRetries times. If a deadLetterQueue is not defined, messages that repeatedly fail processing will eventually be discarded. If there is no Queue with the specified name, it will be created automatically.
 
 - `maxConcurrency`: The maximum number of concurrent consumers allowed to run at once. Leaving this unset will mean that the number of invocations will scale to the currently supported maximum.
