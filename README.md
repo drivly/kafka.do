@@ -7,7 +7,7 @@ kafka.do is a simplified interface for Kafka topics, allowing you to easily mana
 ### List all queues
 
 - `GET /`
-  
+
 ### Consume from a queue
 
 - `GET /:queue`
@@ -19,14 +19,9 @@ kafka.do is a simplified interface for Kafka topics, allowing you to easily mana
 ### Send a batch of messages
 
 - `POST /:queue/sendBatch`
-  
+
   ```json
-  {
-    "messages": [
-      "message1",
-      "message2"
-    ]
-  }
+  ["message1", "message2"]
   ```
 
 ### Acknowledge all messages as consumed
