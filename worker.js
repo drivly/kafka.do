@@ -16,7 +16,7 @@ const withCtx = async (request, env) => {
     return Response.redirect('/login')
   }
   request.api = {
-    icon: '🌎',
+    icon: '▥',
     name: 'kafka.do',
     description: 'Cloudflare Worker API for Kafka with webhooks',
     url: 'https://kafka.do',
@@ -28,8 +28,8 @@ const withCtx = async (request, env) => {
       retryAll: request.ctx.origin + '/:queue/retryAll',
       acknowledge: request.ctx.origin + '/:queue/ack/:messageId',
       retry: request.ctx.origin + '/:queue/retry/:messageId',
-      createWebhook: request.ctx.origin + '/:queue/webhook/:url',
       listWebhooks: request.ctx.origin + '/:queue/webhook',
+      createWebhook: request.ctx.origin + '/:queue/webhook/:url',
     },
     memberOf: 'https://apis.do/pubsub',
     login: request.ctx.origin + '/login',
