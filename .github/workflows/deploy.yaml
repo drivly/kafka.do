@@ -1,14 +1,19 @@
 name: Deploy
-on: push
+
+on:
+  push:
+    branches:
+      - main
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     name: Deploy
     steps:
       - uses: actions/checkout@v3
-      - uses: drivly/deploy-worker@beta-3
+      - name: Get dependencies
+        run: 'yarn'
+      - name: Publish
+        uses: cloudflare/wrangler-action@2.0.0
         with:
-          name: 'kafka-do'
-          domain: 'kafka.do'
-          cloudflareApiToken: ${{ secrets.CF_API_TOKEN }}
-          cloudflareAccountId: ${{ secrets.CF_ACCOUNT_ID }}
+          apiToken: ${{ secrets.CF_API_TOKEN }}
