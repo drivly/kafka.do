@@ -10,7 +10,7 @@ services = [
 
 [durable_objects]
 bindings = [
-  { name = "TopicManager", class_name = "TopicManager" }
+  { name = "TopicManager", class_name = "TopicManager", script_name = "TopicManager.js" }
 ]
 
 [[migrations]]
