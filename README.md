@@ -1,6 +1,6 @@
 # kafka.do
 
-kafka.do is a simplified interface for Kafka topics, allowing you to easily manage your Kafka queues.
+kafka.do is a simplified interface for Kafka topics, allowing you to easily manage topics for subscriptions and webhooks.
 
 ## Endpoints
 
@@ -58,6 +58,6 @@ Each endpoint creates the queue if it does not exist and accepts the following p
 
 - `maxRetries`: The maximum number of retries for a message, if it fails or retryAll is invoked.
 
-- `deadLetterQueue`: The name of another Queue to send a message if it fails processing at least maxRetries times. If a deadLetterQueue is not defined, messages that repeatedly fail processing will eventually be discarded. If there is no Queue with the specified name, it will be created automatically.
+- `deadLetterQueue`: The name of another queue to send a message if it fails processing at least maxRetries times. If a deadLetterQueue is not defined, messages that repeatedly fail processing will eventually be discarded. If there is no queue with the specified name, it will be created automatically.
 
 - `maxConcurrency`: The maximum number of concurrent consumers allowed to run at once. Leaving this unset will mean that the number of invocations will scale to the currently supported maximum.
