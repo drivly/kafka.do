@@ -491,11 +491,6 @@ itty-durable@^2.1.0:
   resolved "https://registry.yarnpkg.com/itty-durable/-/itty-durable-2.1.0.tgz#a98aa85e09eaa1fa3c38fc6c71bbfd48edeecee9"
   integrity sha512-iOfuUcMCMVfTS+qqd0miRw9caH+DuonwALoBGlfjqT6ed6yyskI2sWX6gAtDQsaueCRl3BdYRVpvlVNsuNsiNw==
 
-itty-router-extras@^0.4.5:
-  version "0.4.5"
-  resolved "https://registry.yarnpkg.com/itty-router-extras/-/itty-router-extras-0.4.5.tgz#9f3fec9da1fe7e04a6a101e7741fd587967b277d"
-  integrity sha512-flxFhFZgPqiscrHTV3mBbRBk8plgOGdg5tZMyv7hE629PO+XEfXh2uHs78ndH6axRG50fIHfjrrqAlb3Pguemw==
-
 itty-router@^4.0.15:
   version "4.0.15"
   resolved "https://registry.yarnpkg.com/itty-router/-/itty-router-4.0.15.tgz#e7ddcab5cac90ffff8edc01cecf24a7df851f061"

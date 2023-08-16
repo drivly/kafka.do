@@ -1,8 +1,8 @@
 import { Kafka } from '@upstash/kafka'
 import { withDurables } from 'itty-durable'
-import { json, withParams } from 'itty-router'
-import { ThrowableRouter, missing } from 'itty-router-extras'
+import { Router, json, error, withParams } from 'itty-router'
 import { SVIX } from 'svix'
+import { TopicManager } from './TopicManager'
 
 let kafkaConfig
 let svixSecret
@@ -44,42 +44,52 @@ const withCtx = async (request, env) => {
   }
 }
 
-const router = ThrowableRouter()
+const router = Router()
 router.all('*', withCtx)
 router.all('*', withParams)
 router.all('*', withDurables())
 
 router.get('/', async (request) => {
+  return json({ api: request.api, user: request.ctx.user })
 })
 
 router.get('/:queue', async (request) => {
+  return json({ api: request.api, user: request.ctx.user })
 })
 
 router.get('/:queue/send/:message', async (request) => {
+  return json({ api: request.api, user: request.ctx.user })
 })
 
 router.post('/:queue/sendBatch', async (request) => {
+  return json({ api: request.api, user: request.ctx.user })
 })
 
 router.get('/:queue/ackAll', async (request) => {
+  return json({ api: request.api, user: request.ctx.user })
 })
 
 router.get('/:queue/retryAll', async (request) => {
+  return json({ api: request.api, user: request.ctx.user })
 })
 
 router.get('/:queue/ack/:messageId', async (request) => {
+  return json({ api: request.api, user: request.ctx.user })
 })
 
 router.get('/:queue/retry/:messageId', async (request) => {
+  return json({ api: request.api, user: request.ctx.user })
 })
 
 router.get('/:queue/webhook/:url', async (request) => {
+  return json({ api: request.api, user: request.ctx.user })
 })
 
 router.get('/:queue/webhook', async (request) => {
+  return json({ api: request.api, user: request.ctx.user })
 })
 
-router.get('*', (request) => missing({ api: request.api, error: 'Not Found', user: request.ctx.user }))
+router.get('*', (request) => error(404, { api: request.api, error: 'Not Found', user: request.ctx.user }))
 
 export default {
   fetch(request, env) {

@@ -7,3 +7,8 @@ compatibility_date = "2023-07-24"
 services = [
   { binding = "CTX", service = "ctx-do", environment = "production" }
 ]
+
+[durable_objects]
+bindings = [
+  { name = "TopicManager", class_name = "TopicManager" }
+]
