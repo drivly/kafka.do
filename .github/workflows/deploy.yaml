@@ -1,3 +1,4 @@
+
 name: Deploy
 
 on:
@@ -10,10 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     name: Deploy
     steps:
-      - uses: actions/checkout@v3
       - name: Get dependencies
         run: 'yarn'
-      - name: Publish
-        uses: cloudflare/wrangler-action@2.0.0
+      - name: Deploy
+        uses: cloudflare/wrangler-action@3
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
