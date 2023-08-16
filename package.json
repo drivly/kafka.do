@@ -1,7 +1,7 @@
 {
   "name": "kafka.do",
   "version": "0.0.1",
-  "description": "A Cloudflare Worker API providing a Cloudflare Queues-like API with the maturity of Kafka topics.",
+  "description": "Cloudflare Worker API for Kafka with webhooks",
   "private": true,
   "scripts": {
     "deploy": "wrangler deploy",
