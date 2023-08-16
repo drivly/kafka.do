@@ -40,6 +40,10 @@ kafka.do is a simplified interface for Kafka topics, allowing you to easily mana
 
 - `GET /:queue/webhook/:url`
 
+### List queue webhooks
+
+- `GET /:queue/webhook`
+
 ## Parameters
 
 Each endpoint creates the queue if it does not exist and accepts the following parameters to change queue behavior:
