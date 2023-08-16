@@ -1,7 +1,7 @@
 import { Kafka } from '@upstash/kafka'
 import { createDurable, withDurables } from 'itty-durable'
-import { Router, json, error, withParams } from 'itty-router'
-import { SVIX } from 'svix'
+import { Router, error, json, withParams } from 'itty-router'
+import { Svix } from 'svix'
 
 let kafkaConfig
 let svixSecret
@@ -15,7 +15,6 @@ const withCtx = async (request, env) => {
       password: env.KAFKA_PASSWORD,
     }
   if (!svixSecret) svixSecret = env.SVIX_SECRET
-  console.log(request)
   if (!request.ctx.user) {
     return Response.redirect('/login')
   }

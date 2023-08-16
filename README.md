@@ -4,28 +4,34 @@
 
 ## Endpoints
 
-### List all queues
+### List all registered servers
 
 ```http
 GET /
 ```
 
+### List all registered queues on server
+
+```http
+GET /:server
+```
+
 ### Consume from a queue
 
 ```http
-GET /:queue
+GET /:server/:queue
 ```
 
 ### Produce a message to a queue
 
 ```http
-GET /:queue/send/:message
+GET /:server/:queue/send/:message
 ```
 
 ### Send a batch of messages
 
 ```http
-POST /:queue/sendBatch
+POST /:server/:queue/sendBatch
 ```
 
 Payload:
@@ -37,42 +43,42 @@ Payload:
 ### Acknowledge all messages as consumed
 
 ```http
-GET /:queue/ackAll
+GET /:server/:queue/ackAll
 ```
 
 ### Mark all messages to be retried
 
 ```http
-GET /:queue/retryAll
+GET /:server/:queue/retryAll
 ```
 
 ### Acknowledge a message as consumed
 
 ```http
-GET /:queue/ack/:messageId
+GET /:server/:queue/ack/:messageId
 ```
 
 ### Mark a message to be retried
 
 ```http
-GET /:queue/retry/:messageId
+GET /:server/:queue/retry/:messageId
 ```
 
 ### Automatically consume to a webhook URL
 
 ```http
-GET /:queue/webhook/:url
+GET /:server/:queue/webhook/:url
 ```
 
-### List a queue's webhooks
+### List a queue's registered webhooks
 
 ```http
-GET /:queue/webhook
+GET /:server/:queue/webhook
 ```
 
 ## Parameters
 
-Each endpoint besides list creates the queue if it does not exist and accepts the following parameters to change queue behavior:
+Each queue endpoint registers a topic if it is not already registered and accepts the following parameters to change queue behavior:
 
 - `maxBatchSize`: The maximum number of messages allowed in each batch.
 - `maxBatchTimeout`: The maximum number of seconds to wait until a batch is full.
