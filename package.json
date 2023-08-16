@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "deploy": "wrangler deploy",
-    "start": "wrangler dev",
+    "dev": "wrangler dev",
     "format": "prettier --write ."
   },
   "dependencies": {
@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "prettier": "^3.0.2",
-    "wrangler": "^3.5.0"
+    "wrangler": "^3.5.1"
   },
   "prettier": {
     "singleQuote": true,

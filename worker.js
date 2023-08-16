@@ -129,6 +129,10 @@ router.get('/fetch/:topic', async (request) => {
   }
 })
 
-addEventListener('fetch', (event) => {
-  event.respondWith(router.all('*', withCtx).handle(event.request, event.env))
-})
+router.get('*', () => new Response('Not Found.', { status: 404 }))
+
+export default {
+	async fetch(request) {
+    return router.all('*', withCtx).handle(request, env)
+	},
+}

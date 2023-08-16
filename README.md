@@ -44,7 +44,7 @@ kafka.do is a simplified interface for Kafka topics, allowing you to easily mana
 
 - `GET /:queue/webhook/:url`
 
-### List queue webhooks
+### List a queue's webhooks
 
 - `GET /:queue/webhook`
 
