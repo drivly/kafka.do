@@ -38,16 +38,13 @@ router.get('/', async (request) => {
       Authorization: 'Basic ' + request.auth,
     },
   }).then((response) => response.json())
-  data = Object.fromEntries(Object.entries(data).map(([key, value]) => [key, { partitions: value }]))
-  return json({ api: request.api, data, user: request.ctx.user })
-})
 
-router.get('/:queue', async (request) => {
-  const { queue } = request.params
-  let data = await fetch(`https://${request.env.UPSTASH_KAFKA_SERVER}/consume/GROUP_1/INSTANCE_1/${queue}`, {
+  data = await fetch(`https://${request.env.UPSTASH_KAFKA_SERVER}/offsets/latest`, {
     headers: {
       Authorization: 'Basic ' + request.auth,
     },
+    method: 'POST',
+    body: JSON.stringify(Object.entries(data).flatMap(([topic, partitions]) => Array.from(Array(partitions).keys()).map((partition) => ({ topic, partition })))),
   }).then((response) => response.json())
   return json({ api: request.api, data, user: request.ctx.user })
 })
@@ -74,6 +71,32 @@ router.post('/:queue/sendBatch', async (request) => {
     body: JSON.stringify(messages.map((value) => ({ value }))),
   }).then((response) => response.json())
 
+  return json({ api: request.api, data, user: request.ctx.user })
+})
+
+async function queue(baseUrl, auth, queue, partition, instance) {
+  return await fetch(`https://${baseUrl}/consume/${partition}/${instance}/${queue}`, {
+    headers: {
+      Authorization: 'Basic ' + auth,
+    },
+  }).then((response) => response.json())
+}
+
+router.get('/:queue', async (request) => {
+  const { queue: topic } = request.params
+  let data = await queue(request.env.UPSTASH_KAFKA_SERVER, request.auth, topic, 'GROUP_1', 'INSTANCE_1')
+  return json({ api: request.api, data, user: request.ctx.user })
+})
+
+router.get('/:queue/:partition', async (request) => {
+  const { queue: topic, partition } = request.params
+  let data = await queue(request.env.UPSTASH_KAFKA_SERVER, request.auth, topic, partition, 'INSTANCE_1')
+  return json({ api: request.api, data, user: request.ctx.user })
+})
+
+router.get('/:queue/:partition/:instance', async (request) => {
+  const { queue: topic, partition, instance } = request.params
+  let data = await queue(request.env.UPSTASH_KAFKA_SERVER, request.auth, topic, partition, instance)
   return json({ api: request.api, data, user: request.ctx.user })
 })
 
