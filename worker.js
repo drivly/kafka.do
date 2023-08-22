@@ -6,6 +6,9 @@ const withCtx = async (request, env) => {
   if (!request.ctx.user) {
     return Response.redirect('/login')
   }
+  if (!['admin', 'worker'].includes(request.ctx.user.role)) {
+    return error(403, { api: request.api, error: 'Forbidden', user: request.ctx.user })
+  }
   request.api = {
     icon: '▥',
     name: 'kafka.do',
