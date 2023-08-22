@@ -38,6 +38,7 @@ router.get('/', async (request) => {
       Authorization: 'Basic ' + request.auth,
     },
   }).then((response) => response.json())
+  data = Object.fromEntries(Object.entries(data).map(([key, value]) => [key, { partitions: value }]))
   return json({ api: request.api, data, user: request.ctx.user })
 })
 
