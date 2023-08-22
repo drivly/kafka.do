@@ -32,7 +32,7 @@ const router = Router()
 router.all('*', withCtx)
 router.all('*', withParams)
 
-router.get('/', async (request) => {
+router.get('/api', async (request) => {
   let data = await fetch(`https://${request.env.UPSTASH_KAFKA_SERVER}/topics`, {
     headers: {
       Authorization: 'Basic ' + request.auth,
