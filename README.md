@@ -106,6 +106,17 @@ fetch: (req, env, ctx) = {
   }
 }
 ```
+And you can send multiple at once:
+
+```typescript
+const sendResultsToQueue = async (results: Array<any>, env: Environment) => {
+  const batch: MessageSendRequest[] = results.map((value) => ({
+    body: JSON.stringify(value),
+  }));
+  await env.queue.sendBatch(batch);
+}
+```
+
 
 #### QueuesContentType
 
