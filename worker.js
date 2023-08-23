@@ -15,7 +15,7 @@ const withCtx = async (request, env) => {
     description: 'Cloudflare Worker API for Kafka with webhooks',
     url: 'https://kafka.do',
     endpoints: {
-      listQueues: request.ctx.origin + '/',
+      listQueues: request.ctx.origin + '/queues',
       consume: request.ctx.origin + '/:queue',
       produce: request.ctx.origin + '/:queue/send/:message',
       sendBatch: request.ctx.origin + '/:queue/sendBatch',
@@ -32,7 +32,10 @@ const router = Router()
 router.all('*', withCtx)
 router.all('*', withParams)
 
-router.get('/api', async (request) => {
+router.get('/api', (request) => listQueues(request))
+router.get('/queues', (request) => listQueues(request))
+
+async function listQueues(request) {
   let data = await fetch(`https://${request.env.UPSTASH_KAFKA_SERVER}/topics`, {
     headers: {
       Authorization: 'Basic ' + request.auth,
@@ -47,7 +50,7 @@ router.get('/api', async (request) => {
     body: JSON.stringify(Object.entries(data).flatMap(([topic, partitions]) => Array.from(Array(partitions).keys()).map((partition) => ({ topic, partition })))),
   }).then((response) => response.json())
   return json({ api: request.api, data, user: request.ctx.user })
-})
+}
 
 router.get('/:queue/send/:message', async (request) => {
   const { queue, message } = request.params
