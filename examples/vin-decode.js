@@ -6,7 +6,13 @@ export default QueueConsumer({
       const { vin, nextQueue } = message
       // TODO: get this `decodeVIN` method implemented
       const { squishVIN, year, make, model, trim, style } = await decodeVIN(vin)
-      env[nextQueue].send({ vin, squishVIN, year, make, model, trim, style })
+      if (nextQueue) {
+        if (!env[nextQueue]?.send) {
+          console.error(`The Queue ${nextQueue} is not currently configured in the env`) 
+        } else {
+          env[nextQueue].send({ vin, squishVIN, year, make, model, trim, style })
+        }
+      } 
     }
   },
 })
