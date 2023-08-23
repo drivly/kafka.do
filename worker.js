@@ -32,6 +32,7 @@ const router = Router()
 router.all('*', withCtx)
 router.all('*', withParams)
 
+router.get('/', (request) => listQueues(request))
 router.get('/api', (request) => listQueues(request))
 router.get('/queues', (request) => listQueues(request))
 
