@@ -1,7 +1,8 @@
 {
   "name": "@drivly/kafka.do",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Cloudflare Worker API for Kafka with webhooks",
+  "type": "module",
   "scripts": {
     "deploy": "wrangler deploy",
     "dev": "wrangler dev",
