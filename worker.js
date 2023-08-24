@@ -74,5 +74,6 @@ export default {
   fetch(request, env) {
     return router.handle(request, env)
   },
-  UpstashKafka,
 }
+export { UpstashKafka } from './UpstashKafka'
+export { QueueConsumer } from './consumer'

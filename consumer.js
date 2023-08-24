@@ -35,7 +35,7 @@ export default {
   async queue() {},
 }
 
-export class KafkaConsumer {
+class KafkaConsumer {
   constructor(ctx, env) {
     // Create alarms based on the settings
   }
@@ -44,3 +44,4 @@ export class KafkaConsumer {
 
   async alarm() {}
 }
+export { KafkaConsumer, QueueConsumer }
