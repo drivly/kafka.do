@@ -1,5 +1,6 @@
 import { Router, error, json, withParams } from 'itty-router'
-
+import { UpstashKafka } from './UpstashKafka'
+/** @type {UpstashKafka} */ let kafka
 const withCtx = async (request, env) => {
   request.ctx = await env.CTX.fetch(request).then((res) => res.json())
   request.env = env
@@ -25,82 +26,45 @@ const withCtx = async (request, env) => {
     logout: request.ctx.origin + '/logout',
     repo: 'https://github.com/drivly/kafka.do',
   }
-  request.auth = btoa(`${env.UPSTASH_KAFKA_USERNAME}:${env.UPSTASH_KAFKA_PASSWORD}`)
+  if (!kafka) kafka = new UpstashKafka(env.UPSTASH_KAFKA_SERVER, env.UPSTASH_KAFKA_USERNAME, env.UPSTASH_KAFKA_PASSWORD)
 }
 
 const router = Router()
 router.all('*', withCtx)
 router.all('*', withParams)
 
-router.get('/', (request) => listQueues(request))
-router.get('/api', (request) => listQueues(request))
-router.get('/queues', (request) => listQueues(request))
-
-async function listQueues(request) {
-  let data = await fetch(`https://${request.env.UPSTASH_KAFKA_SERVER}/topics`, {
-    headers: {
-      Authorization: 'Basic ' + request.auth,
-    },
-  }).then((response) => response.json())
-
-  data = await fetch(`https://${request.env.UPSTASH_KAFKA_SERVER}/offsets/latest`, {
-    headers: {
-      Authorization: 'Basic ' + request.auth,
-    },
-    method: 'POST',
-    body: JSON.stringify(Object.entries(data).flatMap(([topic, partitions]) => Array.from(Array(partitions).keys()).map((partition) => ({ topic, partition })))),
-  }).then((response) => response.json())
-  return json({ api: request.api, data, user: request.ctx.user })
-}
+router.get('/', async (request) => json({ api: request.api, data: await kafka.listQueues(), user: request.ctx.user }))
+router.get('/api', async (request) => json({ api: request.api, data: await kafka.listQueues(), user: request.ctx.user }))
+router.get('/queues', async (request) => json({ api: request.api, data: await kafka.listQueues(), user: request.ctx.user }))
 
 router.get('/:queue/send/:message', async (request) => {
   const { queue, message } = request.params
-  let data = await fetch(`https://${request.env.UPSTASH_KAFKA_SERVER}/produce/${queue}/${message}`, {
-    headers: {
-      Authorization: 'Basic ' + request.auth,
-    },
-  }).then((response) => response.json())
-
+  const data = await kafka.send(queue, message)
   return json({ api: request.api, data, user: request.ctx.user })
 })
 
 router.post('/:queue/sendBatch', async (request) => {
   const { queue } = request.params
   const messages = await request.json()
-  let data = await fetch(`https://${request.env.UPSTASH_KAFKA_SERVER}/produce/${queue}`, {
-    headers: {
-      Authorization: 'Basic ' + request.auth,
-    },
-    method: 'POST',
-    body: JSON.stringify(messages.map((value) => ({ value }))),
-  }).then((response) => response.json())
-
+  const data = await kafka.sendBatch(queue, messages)
   return json({ api: request.api, data, user: request.ctx.user })
 })
-
-async function queue(baseUrl, auth, queue, partition, instance) {
-  return await fetch(`https://${baseUrl}/consume/${partition}/${instance}/${queue}`, {
-    headers: {
-      Authorization: 'Basic ' + auth,
-    },
-  }).then((response) => response.json())
-}
 
 router.get('/:queue', async (request) => {
   const { queue: topic } = request.params
-  let data = await queue(request.env.UPSTASH_KAFKA_SERVER, request.auth, topic, 'GROUP_1', 'INSTANCE_1')
+  const data = await kafka.queue(topic)
   return json({ api: request.api, data, user: request.ctx.user })
 })
 
-router.get('/:queue/:partition', async (request) => {
-  const { queue: topic, partition } = request.params
-  let data = await queue(request.env.UPSTASH_KAFKA_SERVER, request.auth, topic, partition, 'INSTANCE_1')
+router.get('/:queue/:group', async (request) => {
+  const { queue: topic, group } = request.params
+  const data = await kafka.queue(topic, group)
   return json({ api: request.api, data, user: request.ctx.user })
 })
 
-router.get('/:queue/:partition/:instance', async (request) => {
-  const { queue: topic, partition, instance } = request.params
-  let data = await queue(request.env.UPSTASH_KAFKA_SERVER, request.auth, topic, partition, instance)
+router.get('/:queue/:group/:partition', async (request) => {
+  const { queue: topic, partition, group } = request.params
+  const data = await kafka.queue(topic, group, partition)
   return json({ api: request.api, data, user: request.ctx.user })
 })
 
@@ -110,4 +74,5 @@ export default {
   fetch(request, env) {
     return router.handle(request, env)
   },
+  UpstashKafka,
 }
