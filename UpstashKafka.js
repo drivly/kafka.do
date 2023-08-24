@@ -1,4 +1,6 @@
 export class UpstashKafka {
+  #baseUrl
+  #auth
   constructor(baseUrl, username, password) {
     this.#baseUrl = baseUrl
     this.#auth = btoa(`${username}:${password}`)
