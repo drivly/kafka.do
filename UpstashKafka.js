@@ -5,22 +5,23 @@ export class UpstashKafka {
   }
 
   async listQueues() {
-    let data = await fetch(`https://${this.baseUrl}/topics`, {
+    const data = await fetch(`https://${this.baseUrl}/topics`, {
       headers: { Authorization: 'Basic ' + this.auth },
     }).then((response) => response.json())
 
-    data = await fetch(`https://${this.baseUrl}/offsets/latest`, {
+    return await fetch(`https://${this.baseUrl}/offsets/latest`, {
       headers: { Authorization: 'Basic ' + this.auth },
       method: 'POST',
       body: JSON.stringify(Object.entries(data).flatMap(([topic, partitions]) => Array.from(Array(partitions).keys()).map((partition) => ({ topic, partition })))),
-    }).then((response) => response.json())
-    return data
+    })
+      .then((response) => response.json())
+      .then((t) => t.map(({ topic, partition, offset }) => ({ queue: topic, partition, offset })))
   }
 
   async send(queue, message) {
     return await fetch(`https://${this.baseUrl}/produce/${queue}/${message}`, {
       headers: { Authorization: 'Basic ' + this.auth },
-    }).then((response) => response.json())
+    }).then((response) => this.formatResponse(response))
   }
 
   async sendBatch(queue, messages) {
@@ -28,17 +29,17 @@ export class UpstashKafka {
       headers: { Authorization: 'Basic ' + this.auth },
       method: 'POST',
       body: JSON.stringify(messages.map((value) => ({ value }))),
-    }).then((response) => response.json())
+    }).then((response) => this.formatResponse(response))
   }
 
   async queue(queue, group = 'GROUP_1', partition = '0') {
     return await fetch(`https://${this.baseUrl}/consume/${group}/${partition}/${queue}`, {
       headers: { Authorization: 'Basic ' + this.auth },
-    }).then((response) => response.json())
+    }).then((response) => this.formatResponse(response))
   }
 
   async fetch(queue, partition, offset) {
-    const response = await fetch(`https://${this.baseUrl}/fetch`, {
+    return await fetch(`https://${this.baseUrl}/fetch`, {
       headers: { Authorization: `Basic ${auth}` },
       method: 'POST',
       body: JSON.stringify({
@@ -46,7 +47,13 @@ export class UpstashKafka {
         partition,
         offset,
       }),
-    })
-    return await response.json()
+    }).then((response) => this.formatResponse(response))
+  }
+
+  async formatResponse(response) {
+    let value = await response.json()
+    value = { queue: value.topic, ...value }
+    delete value.topic
+    return value
   }
 }

@@ -2,7 +2,6 @@
   "name": "@drivly/kafka.do",
   "version": "0.0.1",
   "description": "Cloudflare Worker API for Kafka with webhooks",
-  "private": true,
   "scripts": {
     "deploy": "wrangler deploy",
     "dev": "wrangler dev",
@@ -21,5 +20,8 @@
     "printWidth": 200,
     "semi": false,
     "tabWidth": 2
+  },
+  "publishConfig": {
+    "access": "restricted"
   }
 }
