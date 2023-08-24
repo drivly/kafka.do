@@ -18,10 +18,7 @@ export default QueueConsumer({
 
 let squishVins
 async function decodeVIN(vin) {
-  if (!squishVins) {
-    squishVins = await fetch('https://vehicles.do/ymms.json').then((res) => res.json())
-  }
-
+  if (!squishVins) squishVins = await fetch('https://vehicles.do/ymms.json').then((res) => res.json())
   const vinFormatted = vin?.match(/^[1-9A-HJ-NPR-Z][0-9A-HJ-NPR-Z]{7}[0-9X][0-9A-HJ-NPR-Z]{8}$/)
   const squishVIN = vinFormatted ? vin.slice(0, 8) + vin.slice(9, 11) : undefined
   const [year, make, model, style] = (squishVIN && squishVins[squishVIN]?.split('|')) || []
