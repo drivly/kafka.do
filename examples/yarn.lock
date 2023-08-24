@@ -2,8 +2,8 @@
 # yarn lockfile v1
 
 
-"@drivly/kafka.do@^0.0.2":
-  version "0.0.2"
+"@drivly/kafka.do@^0.0.9":
+  version "0.0.9"
   resolved "https://registry.yarnpkg.com/@drivly/kafka.do/-/kafka.do-0.0.2.tgz#0e754458f7878d1e7eb8ca924974dc2695575903"
   integrity sha512-2vVwRDNA9uCMJWOSTY9nk9HvSiE7JEugMmbsmE7/uOpwVpwTmwGu5FzBpvy7KHPdQ7SymO/bBO1jOUiCdRylMg==
   dependencies:
