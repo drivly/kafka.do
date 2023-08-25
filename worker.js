@@ -26,7 +26,7 @@ const withCtx = async (request, env) => {
     logout: request.ctx.origin + '/logout',
     repo: 'https://github.com/drivly/kafka.do',
   }
-  if (!kafka) kafka = new UpstashKafka(env.UPSTASH_KAFKA_SERVER, env.UPSTASH_KAFKA_USERNAME, env.UPSTASH_KAFKA_PASSWORD)
+  if (!kafka) kafka = new UpstashKafka(env.QUEUE_SERVER, env.QUEUE_USERNAME, env.QUEUE_PASSWORD)
 }
 
 const router = Router()
@@ -77,3 +77,6 @@ export default {
 }
 export { UpstashKafka } from './UpstashKafka'
 export { QueueConsumer } from './consumer'
+export { QueueProducer } from './producer'
+export { Message } from './message'
+export { MessageBatch } from './messageBatch'

@@ -1,17 +1,20 @@
-const QueueConsumer = (workerClass) => {
+import { UpstashKafka } from './worker'
+
+const QueueConsumer = (workerClass, queue) => {
   workerClass.scheduled = (event, env, ctx) => {
     // create the DO instances
   }
-  workerClass.alarm = async () => {
+  workerClass.alarm = async (env, ctx) => {
     // do a long poll of the Upstash API
-    const results = await fetch(`https://${env.CLUSTER_NAME}-rest-kafka.upstash.io/fetch`).then((res) => res.json())
+    const kafka = new UpstashKafka(env.QUEUE_SERVER, env.QUEUE_USERNAME, env.QUEUE_PASSWORD)
+    const results = await kafka.queue(queue || env.QUEUE_NAME)
     const event = {
-      queue: env.CLUSTER_NAME,
+      queue: queue || env.QUEUE_NAME,
       messages: results.map((result) => {
         return {
-          id: result.id, // TODO: map this correctly
-          timestamp: result.ts, // TODO: map this correctly
-          body: result.data, // TODO: map this correctly
+          id: result.offset, // TODO: map this correctly
+          timestamp: result.timestamp, // TODO: map this correctly
+          body: result.value, // TODO: map this correctly
           ack: () => {
             // TODO: figure out the logic to `ack` this message
           },

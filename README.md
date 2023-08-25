@@ -1,6 +1,6 @@
 # kafka.do
 
-`kafka.do` is a simple API for managing Kafka-based queues. Webhook URLs can be added to retrofit existing applications to consume from queues without needing to modify the application itself to subscribe to Kafka topics. Below are the available endpoints.
+`kafka.do` is a simple API for managing Kafka-based queues. Below are the available endpoints.
 
 ## Endpoints
 
@@ -10,28 +10,22 @@
 GET /
 ```
 
-### List all registered queues on server
-
-```http
-GET /:server
-```
-
 ### Consume from a queue
 
 ```http
-GET /:server/:queue
+GET /:queue
 ```
 
 ### Produce a message to a queue
 
 ```http
-GET /:server/:queue/send/:message
+GET /:queue/send/:message
 ```
 
 ### Send a batch of messages
 
 ```http
-POST /:server/:queue/sendBatch
+POST /:queue/sendBatch
 ```
 
 Payload:
@@ -43,37 +37,25 @@ Payload:
 ### Acknowledge all messages as consumed
 
 ```http
-GET /:server/:queue/ackAll
+GET /:queue/ackAll
 ```
 
 ### Mark all messages to be retried
 
 ```http
-GET /:server/:queue/retryAll
+GET /:queue/retryAll
 ```
 
 ### Acknowledge a message as consumed
 
 ```http
-GET /:server/:queue/ack/:messageId
+GET /:queue/ack/:messageId
 ```
 
 ### Mark a message to be retried
 
 ```http
-GET /:server/:queue/retry/:messageId
-```
-
-### Automatically consume to a webhook URL
-
-```http
-GET /:server/:queue/webhook/:url
-```
-
-### List a queue's registered webhooks
-
-```http
-GET /:server/:queue/webhook
+GET /:queue/retry/:messageId
 ```
 
 ## Parameters
@@ -85,7 +67,6 @@ Each queue endpoint registers a topic if it is not already registered and accept
 - `maxRetries`: The maximum number of retries for a message, if it fails or retryAll is invoked.
 - `deadLetterQueue`: The name of another queue to send a message if it fails processing at least maxRetries times. If a deadLetterQueue is not defined, messages that repeatedly fail processing will eventually be discarded. If there is no queue with the specified name, it will be created automatically.
 - `maxConcurrency`: The maximum number of concurrent consumers allowed to run at once. Leaving this unset means that the number of invocations will scale to the currently supported maximum.
-
 
 ## Cloudflare Worker Queue Compatibility
 
@@ -106,22 +87,22 @@ fetch: (req, env, ctx) = {
   }
 }
 ```
+
 And you can send multiple at once:
 
 ```typescript
 const sendResultsToQueue = async (results: Array<any>, env: Environment) => {
   const batch: MessageSendRequest[] = results.map((value) => ({
     body: JSON.stringify(value),
-  }));
-  await env.queue.sendBatch(batch);
+  }))
+  await env.queue.sendBatch(batch)
 }
 ```
-
 
 #### QueuesContentType
 
 ```typescript
-type QueuesContentType = "text" | "bytes" | "json" | "v8"
+type QueuesContentType = 'text' | 'bytes' | 'json' | 'v8'
 ```
 
 ### Consumer
@@ -130,11 +111,7 @@ type QueuesContentType = "text" | "bytes" | "json" | "v8"
 import { QueueConsumer } from 'kafka.do'
 
 export default QueueConsumer({
-  async queue(
-    batch: MessageBatch,
-    env: Environment,
-    ctx: ExecutionContext
-  ): Promise<void> {
+  async queue(batch: MessageBatch, env: Environment, ctx: ExecutionContext): Promise<void> {
     for (const message of batch.messages) {
       console.log('Received', message)
     }
