@@ -39,14 +39,14 @@ router.get('/queues', async (request) => json({ api: request.api, data: await ka
 
 router.get('/:queue/send/:message', async (request) => {
   const { queue, message } = request.params
-  const data = await kafka.send(queue, message)
+  const data = await kafka.send(message, queue)
   return json({ api: request.api, data, user: request.ctx.user })
 })
 
 router.post('/:queue/sendBatch', async (request) => {
   const { queue } = request.params
   const messages = await request.json()
-  const data = await kafka.sendBatch(queue, messages)
+  const data = await kafka.sendBatch(messages, queue)
   return json({ api: request.api, data, user: request.ctx.user })
 })
 
@@ -76,7 +76,6 @@ export default {
   },
 }
 export { UpstashKafka } from './UpstashKafka'
-export { QueueConsumer } from './consumer'
+export { QueueConsumer, default as Consumer } from './consumer'
 export { QueueProducer } from './producer'
-export { Message } from './message'
-export { MessageBatch } from './messageBatch'
+export { Message, MessageBatch, MessageSendRequest, QueuesContentType } from './message'

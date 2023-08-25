@@ -1,6 +1,9 @@
 export class UpstashKafka {
   #baseUrl
   #auth
+  queueName
+  group = 'GROUP_1'
+  partition = 0
   constructor(baseUrl, username, password) {
     this.#baseUrl = baseUrl
     this.#auth = btoa(`${username}:${password}`)
@@ -20,13 +23,13 @@ export class UpstashKafka {
       .then((t) => t.map(({ topic, partition, offset }) => ({ queue: topic, partition, offset })))
   }
 
-  async send(queue, message) {
+  async send(message, queue = this.queueName) {
     return await fetch(`https://${this.#baseUrl}/produce/${queue}/${message}`, {
       headers: { Authorization: 'Basic ' + this.#auth },
     }).then((response) => this.#formatResponse(response))
   }
 
-  async sendBatch(queue, messages) {
+  async sendBatch(messages, queue = this.queueName) {
     return await fetch(`https://${this.#baseUrl}/produce/${queue}`, {
       headers: { Authorization: 'Basic ' + this.#auth },
       method: 'POST',
@@ -34,13 +37,27 @@ export class UpstashKafka {
     }).then((response) => this.#formatResponse(response))
   }
 
-  async queue(queue, group = 'GROUP_1', partition = '0') {
+  async queue(queue = this.queueName, group = this.group, partition = this.partition) {
     return await fetch(`https://${this.#baseUrl}/consume/${group}/${partition}/${queue}`, {
+      headers: { Authorization: 'Basic ' + this.#auth, 'Kafka-Enable-Auto-Commit': false },
+    }).then((response) => this.#formatResponse(response))
+  }
+
+  async ack(offset, queue = this.queueName, group = this.group, partition = this.partition) {
+    return await fetch(`https://${this.#baseUrl}/commit/${group}/${partition}`, {
+      headers: { Authorization: 'Basic ' + this.#auth },
+      method: 'POST',
+      body: JSON.stringify({ topic: queue, partition, offset }),
+    }).then((response) => this.#formatResponse(response))
+  }
+
+  async ackAll(group = this.group, partition = this.partition) {
+    return await fetch(`https://${this.#baseUrl}/commit/${group}/${partition}`, {
       headers: { Authorization: 'Basic ' + this.#auth },
     }).then((response) => this.#formatResponse(response))
   }
 
-  async fetch(queue, partition, offset) {
+  async fetch(offset, queue = this.queueName, partition = this.partition) {
     return await fetch(`https://${this.#baseUrl}/fetch`, {
       headers: { Authorization: `Basic ${auth}` },
       method: 'POST',
