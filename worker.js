@@ -4,7 +4,7 @@ import { UpstashKafka } from './UpstashKafka'
 const withCtx = async (request, env) => {
   request.ctx = await env.CTX.fetch(request).then((res) => res.json())
   request.env = env
-  if (!request.ctx.user) {
+  if (!request.ctx.user?.authenticated) {
     return Response.redirect('/login')
   }
   if (!['admin', 'worker'].includes(request.ctx.user.role)) {
