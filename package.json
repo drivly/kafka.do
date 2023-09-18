@@ -1,6 +1,6 @@
 {
   "name": "@drivly/kafka.do",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Cloudflare Worker API for Kafka with webhooks",
   "main": "worker",
   "repository": "git@github.com:drivly/kafka.do.git",
@@ -24,6 +24,6 @@
     "tabWidth": 2
   },
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   }
 }
