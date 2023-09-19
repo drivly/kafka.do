@@ -1,6 +1,6 @@
 import { Router, error, json, withParams } from 'itty-router'
 import { UpstashKafka } from './UpstashKafka'
-/** @type {UpstashKafka} */ let kafka
+let kafka
 const withCtx = async (request, env) => {
   request.ctx = await env.CTX.fetch(request).then((res) => res.json())
   request.env = env
@@ -75,6 +75,3 @@ export default {
     return router.handle(request, env)
   },
 }
-export { UpstashKafka } from './UpstashKafka'
-export { QueueConsumer, default as Consumer } from './consumer'
-export { QueueProducer } from './producer'

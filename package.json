@@ -1,9 +1,16 @@
 {
   "name": "@drivly/kafka.do",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Cloudflare Worker API for Kafka with webhooks",
-  "main": "worker",
+  "main": "index.js",
   "repository": "git@github.com:drivly/kafka.do.git",
+  "files": [
+    "consumer.js",
+    "producer.js",
+    "UpstashKafka.js",
+    "message.js",
+    "message.ts"
+  ],
   "scripts": {
     "deploy": "wrangler deploy",
     "dev": "wrangler dev",
@@ -14,6 +21,7 @@
   },
   "devDependencies": {
     "prettier": "^3.0.2",
+    "typescript": "^5.2.2",
     "wrangler": "^3.5.1"
   },
   "prettier": {

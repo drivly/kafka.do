@@ -15,6 +15,7 @@ export interface MessageBatch<Body = unknown> {
   retryAll(): void
 }
 
-export interface MessageSendRequest {
-  body: QueuesContentType
+export type MessageSendRequest<Body = unknown> = {
+  body: Body
+  contentType?: QueuesContentType
 }
