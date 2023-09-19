@@ -1,5 +1,5 @@
 import { Router, error, json, withParams } from 'itty-router'
-import { UpstashKafka } from './UpstashKafka'
+import { KafkaConsumer } from './UpstashKafka'
 import { QueueProducer } from './producer'
 let kafka
 const withCtx = async (request, env) => {
@@ -27,16 +27,14 @@ const withCtx = async (request, env) => {
     logout: request.ctx.origin + '/logout',
     repo: 'https://github.com/drivly/kafka.do',
   }
-  if (!kafka) kafka = new UpstashKafka(env.QUEUE_SERVER, env.QUEUE_USERNAME, env.QUEUE_PASSWORD)
+  if (!kafka) kafka = new KafkaConsumer(env.QUEUE_SERVER, env.QUEUE_USERNAME, env.QUEUE_PASSWORD)
 }
 
 const router = Router()
 router.all('*', withCtx)
 router.all('*', withParams)
-router.all('*', (request, env) => {
+router.all('*', (request) => {
   if (request.url.endsWith('favicon.ico')) return error(404)
-  const { queue, message } = request.params
-  if (queue && (message || request.method === 'POST')) QueueProducer(queue, env)
 })
 
 router.get('/', async (request) => json({ api: request.api, data: await kafka.listQueues(), user: request.ctx.user }))
@@ -45,16 +43,20 @@ router.get('/queues', async (request) => json({ api: request.api, data: await ka
 
 router.get('/:queue/send/:message', async (request, env) => {
   const { queue, message } = request.params
+  if (!queue || !message) return error(400, { api: request.api, error: 'Bad Request', user: request.ctx.user })
+  QueueProducer(queue, env)
   const data = await env[queue].send(message)
   return json({ api: request.api, data, user: request.ctx.user })
 })
 
-router.post('/:queue/send', send)
-router.post('/:queue/sendBatch', send)
+router.post('/:queue/send', sendBatch)
+router.post('/:queue/sendBatch', sendBatch)
 
-async function send(request, env) {
+async function sendBatch(request, env) {
   const { queue } = request.params
   const messages = await request.json()
+  if (!queue || !messages) return error(400, { api: request.api, error: 'Bad Request', user: request.ctx.user })
+  QueueProducer(queue, env)
   const data = await env[queue].sendBatch(messages)
   return json({ api: request.api, data, user: request.ctx.user })
 }
@@ -71,9 +73,9 @@ router.get('/:queue/:group', async (request) => {
   return json({ api: request.api, data, user: request.ctx.user })
 })
 
-router.get('/:queue/:group/:partition', async (request) => {
-  const { queue: topic, partition, group } = request.params
-  const data = await kafka.queue(topic, group, partition)
+router.get('/:queue/:group/:instance', async (request) => {
+  const { queue: topic, instance, group } = request.params
+  const data = await kafka.queue(topic, group, instance)
   return json({ api: request.api, data, user: request.ctx.user })
 })
 
