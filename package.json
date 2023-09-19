@@ -18,7 +18,7 @@
   "devDependencies": {
     "itty-router": "^4.0.22",
     "prettier": "^3.0.2",
-    "wrangler": "^3.5.1"
+    "wrangler": "^3.8.0"
   },
   "prettier": {
     "singleQuote": true,

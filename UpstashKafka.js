@@ -24,17 +24,15 @@ export class UpstashKafka {
   }
 
   async send(message, queue = this.queueName) {
-    return await fetch(`https://${this.#baseUrl}/produce/${queue}/${message}`, {
+    return await fetch(`https://${this.#baseUrl}/produce/${queue}`, {
       headers: { Authorization: 'Basic ' + this.#auth },
+      method: 'POST',
+      body: JSON.stringify(message.value || message[0]?.value ? message : Array.isArray(message) ? message.map((value) => ({ value })) : { value: message }),
     }).then((response) => this.#formatResponse(response))
   }
 
   async sendBatch(messages, queue = this.queueName) {
-    return await fetch(`https://${this.#baseUrl}/produce/${queue}`, {
-      headers: { Authorization: 'Basic ' + this.#auth },
-      method: 'POST',
-      body: JSON.stringify(messages.map((value) => ({ value }))),
-    }).then((response) => this.#formatResponse(response))
+    this.send(messages, queue)
   }
 
   async queue(queue = this.queueName, group = this.group, partition = this.partition) {
