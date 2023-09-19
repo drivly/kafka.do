@@ -1,6 +1,6 @@
 {
   "name": "@drivly/kafka.do",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "Cloudflare Worker API for Kafka with webhooks",
   "repository": "git@github.com:drivly/kafka.do.git",
   "module": "index.js",
@@ -15,10 +15,8 @@
     "dev": "wrangler dev",
     "format": "prettier --write ."
   },
-  "dependencies": {
-    "itty-router": "^4.0.22"
-  },
   "devDependencies": {
+    "itty-router": "^4.0.22",
     "prettier": "^3.0.2",
     "wrangler": "^3.5.1"
   },
