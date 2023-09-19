@@ -1,12 +1,11 @@
 {
   "name": "@drivly/kafka.do",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "Cloudflare Worker API for Kafka with webhooks",
   "repository": "git@github.com:drivly/kafka.do.git",
   "module": "index.js",
   "files": [
     "index.js",
-    "index.d.ts",
     "consumer.js",
     "producer.js",
     "UpstashKafka.js"
