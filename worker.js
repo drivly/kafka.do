@@ -1,5 +1,6 @@
 import { Router, error, json, withParams } from 'itty-router'
 import { UpstashKafka } from './UpstashKafka'
+import { QueueProducer } from './producer'
 let kafka
 const withCtx = async (request, env) => {
   request.ctx = await env.CTX.fetch(request).then((res) => res.json())
@@ -32,23 +33,31 @@ const withCtx = async (request, env) => {
 const router = Router()
 router.all('*', withCtx)
 router.all('*', withParams)
+router.all('*', (request, env) => {
+  if (request.url.endsWith('favicon.ico')) return error(404)
+  const { queue, message } = request.params
+  if (queue && (message || request.method === 'POST')) QueueProducer(queue, env)
+})
 
 router.get('/', async (request) => json({ api: request.api, data: await kafka.listQueues(), user: request.ctx.user }))
 router.get('/api', async (request) => json({ api: request.api, data: await kafka.listQueues(), user: request.ctx.user }))
 router.get('/queues', async (request) => json({ api: request.api, data: await kafka.listQueues(), user: request.ctx.user }))
 
-router.get('/:queue/send/:message', async (request) => {
+router.get('/:queue/send/:message', async (request, env) => {
   const { queue, message } = request.params
-  const data = await kafka.send(message, queue)
+  const data = await env[queue].send(message)
   return json({ api: request.api, data, user: request.ctx.user })
 })
 
-router.post('/:queue/sendBatch', async (request) => {
+router.post('/:queue/send', send)
+router.post('/:queue/sendBatch', send)
+
+async function send(request, env) {
   const { queue } = request.params
   const messages = await request.json()
-  const data = await kafka.sendBatch(messages, queue)
+  const data = await env[queue].sendBatch(messages)
   return json({ api: request.api, data, user: request.ctx.user })
-})
+}
 
 router.get('/:queue', async (request) => {
   const { queue: topic } = request.params
