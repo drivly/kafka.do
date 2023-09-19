@@ -1,4 +1,4 @@
-import { UpstashKafka } from './worker'
+import { UpstashKafka } from './UpstashKafka'
 
 export const QueueConsumer = (workerClass, queue) => {
   workerClass.scheduled = async (event, env, ctx) => {
