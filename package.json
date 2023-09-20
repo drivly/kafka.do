@@ -4,6 +4,7 @@
   "description": "Cloudflare Worker API for Kafka with webhooks",
   "repository": "git@github.com:drivly/kafka.do.git",
   "module": "index.js",
+  "main": "worker.js",
   "files": [
     "index.js",
     "consumer.js",
