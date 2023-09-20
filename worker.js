@@ -41,14 +41,6 @@ router.get('/', async (request) => json({ api: request.api, data: await kafka.li
 router.get('/api', async (request) => json({ api: request.api, data: await kafka.listQueues(), user: request.ctx.user }))
 router.get('/queues', async (request) => json({ api: request.api, data: await kafka.listQueues(), user: request.ctx.user }))
 
-router.get('/:queue/send/:message', async (request, env) => {
-  const { queue, message } = request.params
-  if (!queue || !message) return error(400, { api: request.api, error: 'Bad Request', user: request.ctx.user })
-  QueueProducer(queue, env)
-  const data = await env[queue].send(message)
-  return json({ api: request.api, data, user: request.ctx.user })
-})
-
 router.post('/:queue/send', sendBatch)
 router.post('/:queue/sendBatch', sendBatch)
 
@@ -60,6 +52,13 @@ async function sendBatch(request, env) {
   const data = await env[queue].sendBatch(messages)
   return json({ api: request.api, data, user: request.ctx.user })
 }
+router.get('/:queue/send/:message', async (request, env) => {
+  const { queue, message } = request.params
+  if (!queue || !message) return error(400, { api: request.api, error: 'Bad Request', user: request.ctx.user })
+  QueueProducer(queue, env)
+  const data = await env[queue].send(message)
+  return json({ api: request.api, data, user: request.ctx.user })
+})
 
 router.get('/:queue', async (request) => {
   const { queue: topic } = request.params

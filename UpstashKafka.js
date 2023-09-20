@@ -73,12 +73,17 @@ export class KafkaProducer extends UpstashKafka {
   }
 
   async send(message, queue = this.queueName) {
-    return await this.kafkaService(`produce/${queue}`, message?.value || message?.[0]?.value ? message : Array.isArray(message) ? message.map((value) => ({ value })) : { value: message }).then(
-      (response) => formatResponse(response)
-    )
+    return await this.sendBatch(message, queue).then((r) => r?.[0] || r)
   }
 
   async sendBatch(messages, queue = this.queueName) {
-    this.send(messages, queue)
+    return await this.kafkaService(
+      `produce/${queue}`,
+      typeof messages?.value === 'string' || typeof messages?.[0]?.value === 'string'
+        ? messages
+        : Array.isArray(messages)
+        ? messages.map((value) => ({ value: JSON.stringify(value) }))
+        : { value: JSON.stringify(messages) }
+    ).then((response) => (Array.isArray(response) ? response.map(formatResponse) : formatResponse(response)))
   }
 }
