@@ -54,7 +54,7 @@ router.post('/:queue/sendBatch', sendBatch)
 
 async function sendBatch(request, env) {
   const { queue } = request.params
-  const messages = await request.json()
+  const messages = request.ctx.json
   if (!queue || !messages) return error(400, { api: request.api, error: 'Bad Request', user: request.ctx.user })
   QueueProducer(queue, env)
   const data = await env[queue].sendBatch(messages)
