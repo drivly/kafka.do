@@ -84,6 +84,6 @@ export class KafkaProducer extends UpstashKafka {
         : Array.isArray(messages)
         ? messages.map((value) => ({ value: JSON.stringify(value) }))
         : { value: JSON.stringify(messages) }
-    ).then((response) => (Array.isArray(response) ? response.map(formatResponse) : formatResponse(response)))
+    ).then((response) => (Array.isArray(response) && Array.isArray(messages) ? response.map((r) => formatResponse(r)) : formatResponse(response?.[0] || response)))
   }
 }
