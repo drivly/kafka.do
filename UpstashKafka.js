@@ -48,8 +48,8 @@ export class KafkaConsumer extends UpstashKafka {
     return messages
   }
 
-  async ack(offset, queue = this.queueName, group = this.group, instance = this.instance) {
-    return await this.kafkaService(`commit/${group}/${instance}`, { topic: queue, partition: this.partition, offset }).then((response) => formatResponse(response))
+  async ack(offset, partition = this.partition, queue = this.queueName, group = this.group, instance = this.instance) {
+    return await this.kafkaService(`commit/${group}/${instance}`, { topic: queue, partition, offset }).then((response) => formatResponse(response))
   }
 
   async ackAll(group = this.group, instance = this.instance) {

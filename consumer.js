@@ -1,4 +1,4 @@
-import { UpstashKafka } from './UpstashKafka'
+import { KafkaConsumer as UpstashKafka } from './UpstashKafka'
 
 export const QueueConsumer = (workerClass, queue) => {
   workerClass.scheduled = async (event, env, ctx) => {
@@ -6,8 +6,7 @@ export const QueueConsumer = (workerClass, queue) => {
   }
   workerClass.alarm = async (env, ctx) => {
     // do a long poll of the Upstash API
-    const kafka = new UpstashKafka(env.QUEUE_SERVER, env.QUEUE_USERNAME, env.QUEUE_PASSWORD)
-    kafka.queueName = queue || env.QUEUE_NAME
+    const kafka = new UpstashKafka(env.QUEUE_SERVER, env.QUEUE_USERNAME, env.QUEUE_PASSWORD, queue || env.QUEUE_NAME)
     const results = await kafka.queue()
     const event = {
       queue,

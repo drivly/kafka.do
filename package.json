@@ -1,6 +1,6 @@
 {
   "name": "@drivly/kafka.do",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "Cloudflare Worker API for Kafka with webhooks",
   "repository": "git@github.com:drivly/kafka.do.git",
   "module": "index.js",
